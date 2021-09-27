@@ -1,5 +1,6 @@
 import regex as r
 import regextreeToAutomaton as rta
+import minimization as min
 
 if __name__ == '__main__':
     inputRegex = input("Entrez une Regex valide:\n")
@@ -12,4 +13,9 @@ if __name__ == '__main__':
     print("## Automaton ##\n")
     automaton = rta.toAutomaton(ast)
     print(automaton)
-    print("###############\n")
+    print("###############\n")    
+
+    print("## Automaton Min ##\n")
+    automaton = min.min(automaton)
+    print(automaton)
+    print("###################\n")

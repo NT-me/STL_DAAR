@@ -1,5 +1,5 @@
 from regextree import RegExTree
-from automaton import Automaton
+from automaton import NDFA as Automaton
 
 
 # ast = returnRet()
