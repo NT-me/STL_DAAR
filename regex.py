@@ -167,8 +167,3 @@ def removeProtection(tree):
 def returnRet():
     inputRegex = input("Entrez une Regex valide:\n")
     return preparse(str(inputRegex))
-
-
-if __name__ == '__main__':
-    inputRegex = input("Entrez une Regex valide:\n")
-    print(preparse(str(inputRegex)))

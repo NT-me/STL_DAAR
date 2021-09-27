@@ -1,61 +1,9 @@
-from regex import *
+from regextree import RegExTree
+from automaton import Automaton
 
-reg = "S(a|g|r)*on"
 
-## Exo 2.1 ##
-
-class RegExTree:
-
-    def __init__(self, root, subTrees=None):
-        # Root value embed into this node
-        self.root = root
-
-        # RegExTrees children list
-        self.subTrees = subTrees
-
-    def __str__(self):
-        if not self.subTrees:
-            return str(self.root)
-        res = str(self.root) + "(" + str(self.subTrees[0])
-
-        for i in range(1, len(self.subTrees)):
-            res += "," + str(self.subTrees[i])
-
-        return res + ")"
-
-operators = ['*', '+', '.', '|']
-    
-
-#############
-
-## Exo 2.2 ##
-
-# ast = RegExTree('.', [RegExTree('.', [RegExTree('S', []), RegExTree('+', [RegExTree('|', [RegExTree('|', [RegExTree('a', []), RegExTree('g', [])]), RegExTree('r', [])])])]), RegExTree('.', [RegExTree('o', []), RegExTree('n', [])])])
-
-ast = returnRet()
-
-# ast = RegExTree('|', [RegExTree('a', []), RegExTree('.', [RegExTree('b', []), RegExTree('*', [RegExTree('c', [])])])])
-
-print(ast)
-
-class Automaton:
-
-    def __init__(self, tTab=[], eTab=[]) -> None:
-        self.tTab = tTab
-        self.eTab = eTab
-
-    def __str__(self) -> str:
-        res = "Initial state : 0\nFinal State :" + str(len(self.tTab)-1) + "\n"
-        for i in range(0, len(self.eTab)):
-            for s in self.eTab[i]:
-                res += "  " + str(i) +" -- epsilon --> " + str(s) + "\n"
-
-        for i in range(0, len(self.tTab)):
-            for col in range(0, 256):
-                if(self.tTab[i][col] != -1):
-                    res += "  " + str(i) + " -- " + chr(col) + " --> " + str(self.tTab[i][col]) + "\n"
-        
-        return res
+# ast = returnRet()
+# print(ast)
 
 def toAutomaton(tree: RegExTree):
 
@@ -201,5 +149,5 @@ def toAutomaton(tree: RegExTree):
 #############
 
 
-automaton = toAutomaton(ast)
-print(automaton)
+# automaton = toAutomaton(ast)
+# print(automaton)
