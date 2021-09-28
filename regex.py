@@ -11,7 +11,6 @@ def parse(result):
     while cont.containEtoile(result):
         result = processEtoile(result)
 
-
     while cont.containPlus(result):
         result = processPlus(result)
 
@@ -28,20 +27,35 @@ def parse(result):
 
 def preparse(inputRegex):
     result = []
+    protecChar = False
+    justreadPtc = False
+
     for char in inputRegex:
-        if char == ".":
-            char = sv.CONCAT
-        elif char == "|":
-            char = sv.ALTERNATE
-        elif char == "+":
-            char = sv.PLUS
-        elif char == "(":
-            char = sv.PARENTHESEOUVERTE
-        elif char == ")":
-            char = sv.PARENTHESEFERMEE
-        elif char == "*":
-            char = sv.STAR
-        result.append(Ret(char, []))
+        if char == "\\" and not protecChar:
+            protecChar = True
+            justreadPtc = True
+
+        if not protecChar:
+            if char == ".":
+                char = sv.CONCAT
+            elif char == "|":
+                char = sv.ALTERNATE
+            elif char == "+":
+                char = sv.PLUS
+            elif char == "(":
+                char = sv.PARENTHESEOUVERTE
+            elif char == ")":
+                char = sv.PARENTHESEFERMEE
+            elif char == "*":
+                char = sv.STAR
+
+        if not justreadPtc:
+            result.append(Ret(char, []))
+        else:
+            justreadPtc = False
+
+        if char != "\\" and protecChar:
+            protecChar = False
     return parse(result)
 
 
