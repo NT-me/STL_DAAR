@@ -51,20 +51,62 @@ class DFA:
                         f.write("  " + str(i) + " --> |" + chr(col) + "| " + str(self.tTab[i][col]) + "\n")
 
     def getNextState(self, parentId : int):
-        row = self.tTab[[parentId]]
+        row = self.tTab[parentId]
         res = []
 
         for i in range(0, len(row)):
             if row[i] != -1:
-                res.append(i)
+                res.append(row[i])
+        return res
+
+    def getTransitionAtState(self, parentId):
+        row = self.tTab[parentId]
+        res = []
+        for i in range(0, len(row)):
+            if row[i] != -1:
+                res.append(chr(i))
         return res
 
 
-    # def checkString(self, str="") -> bool:
-    #     if str == "":
-    #         return False
-    #
-    #     for i in range(0, strLen):
-    #         if str[i] ==
+    def checkSubString(self, str="") -> bool:
+        if str == "":
+            return False
+        strLen = len(str)
+        currentState = self.initalState
+        wordStart = -1
+        for i in range(0, strLen):
+            strchar = str[i]
+            if strchar in self.getTransitionAtState(currentState):
+                # Si la lettre est dans les transisition de l'état
+                if wordStart == -1:
+                    wordStart = i
+                currentState = self.tTab[currentState][ord(strchar)]
+            elif currentState in self.finalStates:
+                return True, wordStart, i
+            elif strchar not in self.getTransitionAtState(currentState):
+                currentState = self.initalState
+                wordStart = -1
+        if currentState in self.finalStates:
+            return True, wordStart, i
+        else:
+            return False
 
         strLen = len(str)
+
+
+    def checkString(self, str=""):
+        res = []
+        ret = True
+        while ret != False:
+            ret = self.checkSubString(str)
+
+            if ret != False:
+                res.append(ret)
+                start = ret[1]
+                end = ret[2]
+                str = str[:start] + str[end:]
+        print(str)
+        if not res or (len(res) == 1 and False in res):
+            return []
+        else:
+            return res

@@ -19,4 +19,7 @@ if __name__ == '__main__':
     automaton = min.min(automaton)
     print(automaton)
     automaton.goToMermaid()
+
+    print("###################\n")
+    print(automaton.checkString("abccccc"))
     print("###################\n")
