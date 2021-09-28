@@ -50,11 +50,11 @@ class DFA:
                     if(self.tTab[i][col] != -1):
                         f.write("  " + str(i) + " --> |" + chr(col) + "| " + str(self.tTab[i][col]) + "\n")
 
-    def checkString(self, str="") -> bool:
-        if str == "":
-            return False
-
-        for i in range(0, strLen):
-            if str[i] ==
+    # def checkString(self, str="") -> bool:
+    #     if str == "":
+    #         return False
+    #
+    #     for i in range(0, strLen):
+    #         if str[i] ==
 
         strLen = len(str)
