@@ -29,6 +29,18 @@ def parse(result):
 def preparse(inputRegex):
     result = []
     for char in inputRegex:
+        if char == ".":
+            char = sv.CONCAT
+        elif char == "|":
+            char = sv.ALTERNATE
+        elif char == "+":
+            char = sv.PLUS
+        elif char == "(":
+            char = sv.PARENTHESEOUVERTE
+        elif char == ")":
+            char = sv.PARENTHESEFERMEE
+        elif char == "*":
+            char = sv.STAR
         result.append(Ret(char, []))
     return parse(result)
 
@@ -38,11 +50,11 @@ def processParenthese(trees):
     flagFound = False
 
     for t in trees:
-        if not flagFound and t.root == ")":
+        if not flagFound and t.root == sv.PARENTHESEFERMEE:
             done = False
             content = []
             while not done and not (len(res) == 0):
-                if res[len(res)-1].root == "(":
+                if res[len(res)-1].root == sv.PARENTHESEOUVERTE:
                     done = True
                     res.pop(len(res)-1)
                 else:
@@ -65,7 +77,7 @@ def processEtoile(trees):
     result = []
     found = False
     for t in trees:
-        if not found and t.root == "*" and len(t.subTrees) == 0:
+        if not found and t.root == sv.STAR and len(t.subTrees) == 0:
             if len(result) == 0:
                 raise Exception("Something go bad near '*'")
             found = True
@@ -82,7 +94,7 @@ def processPlus(trees):
     result = []
     found = False
     for t in trees:
-        if not found and t.root == "+" and len(t.subTrees) == 0:
+        if not found and t.root == sv.PLUS and len(t.subTrees) == 0:
             if len(result) == 0:
                 raise Exception("Something go bad near '+'")
             found = True
@@ -101,17 +113,17 @@ def processConcat(trees):
     firstFound = False
 
     for t in trees:
-        if not found and not firstFound and t.root != "|":
+        if not found and not firstFound and t.root != sv.ALTERNATE:
             firstFound = True
             result.append(t)
             continue
 
-        elif not found and firstFound and t.root == "|":
+        elif not found and firstFound and t.root == sv.ALTERNATE:
             firstFound = False
             result.append(t)
             continue
 
-        elif not found and firstFound and t.root != "|":
+        elif not found and firstFound and t.root != sv.ALTERNATE:
             found = True
             last = result.pop(len(result)-1)
             subTrees = []
@@ -131,7 +143,7 @@ def processAltern(trees):
     done = False
 
     for t in trees:
-        if not found and t.root == "|" and len(t.subTrees) == 0:
+        if not found and t.root == sv.ALTERNATE and len(t.subTrees) == 0:
             if len(result) == 0:
                 raise Exception("Nothing after '|' wtf")
             found = True
