@@ -50,6 +50,16 @@ class DFA:
                     if(self.tTab[i][col] != -1):
                         f.write("  " + str(i) + " --> |" + chr(col) + "| " + str(self.tTab[i][col]) + "\n")
 
+    def getNextState(self, parentId : int):
+        row = self.tTab[[parentId]]
+        res = []
+
+        for i in range(0, len(row)):
+            if row[i] != -1:
+                res.append(i)
+        return res
+
+
     # def checkString(self, str="") -> bool:
     #     if str == "":
     #         return False
