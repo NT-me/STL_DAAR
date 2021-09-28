@@ -22,7 +22,7 @@ def min(automaton: Automaton) -> Automaton:
         tTab.append([-1 for j in range(0, len(transitions[0]))])
 
         state = states[i]
-        print(state)
+        # print(state)
 
         for col in range(0, len(transitions[i])):
             newState = []
@@ -31,10 +31,13 @@ def min(automaton: Automaton) -> Automaton:
             for s in state:
                 if transitions[s][col] != -1:
                     newState.append(transitions[s][col])
-                    newState.extend(e_transitions[transitions[s][col]])
+        
+                    newState = appendETransitions(newState, [transitions[s][col]], e_transitions)
 
-                    if s == len(transitions) - 1:
-                        final = True
+                    for k in newState:
+                        if k == len(transitions) - 1:
+                            final = True
+                            break
 
             if len(newState) > 0:
                 newState.sort()
@@ -46,10 +49,18 @@ def min(automaton: Automaton) -> Automaton:
                     ind = states.index(newState)
                     tTab[i][col] = ind
 
-                if final:
+                if final and (len(states)-1) not in res.finalStates:
                     res.finalStates.append(len(states) - 1)
 
         i += 1
+        # print(states)
 
     res.tTab = tTab
     return res
+
+def appendETransitions(newState, next, eTab):
+    for n in next:
+        newState.extend(eTab[n])
+        newState = appendETransitions(newState, eTab[n], eTab)
+    
+    return newState

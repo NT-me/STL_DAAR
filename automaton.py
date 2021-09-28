@@ -21,7 +21,7 @@ class NDFA:
         return res
 
 class DFA:
-    def __init__(self, initialState: int = 0, finalStates: List = 0, tTab=[]) -> None:
+    def __init__(self, initialState: int = 0, finalStates: List = [], tTab=[]) -> None:
         self.initalState = initialState
         self.finalStates = finalStates
         self.tTab = tTab
