@@ -21,5 +21,5 @@ if __name__ == '__main__':
     automaton.goToMermaid()
 
     print("###################\n")
-    print(automaton.checkString("abccccc"))
+    print(automaton.checkString("azzzzzzbccccc"))
     print("###################\n")

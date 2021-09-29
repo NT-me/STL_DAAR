@@ -67,7 +67,6 @@ class DFA:
                 res.append(chr(i))
         return res
 
-
     def checkSubString(self, str="") -> bool:
         if str == "":
             return False
@@ -93,19 +92,21 @@ class DFA:
 
         strLen = len(str)
 
-
-    def checkString(self, str=""):
+    def checkString(self, inputString=""):
         res = []
         ret = True
+
+        newStart = 0
         while ret != False:
-            ret = self.checkSubString(str)
+            ret = self.checkSubString(inputString)
 
             if ret != False:
-                res.append(ret)
+                res.append((ret[0], ret[1]+newStart, ret[2]+newStart))
                 start = ret[1]
                 end = ret[2]
-                str = str[:start] + str[end:]
-        print(str)
+                inputString = inputString[end:]
+                newStart += end
+
         if not res or (len(res) == 1 and False in res):
             return []
         else:
