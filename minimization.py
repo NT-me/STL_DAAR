@@ -9,6 +9,7 @@ def min(automaton: Automaton) -> Automaton:
     e_transitions = automaton.eTab
 
     states = [[0]]
+    # states[0] = appendETransitions(states[0], e_transitions[0], e_transitions)
     states[0].extend(e_transitions[0])
     states[0].sort()
 
