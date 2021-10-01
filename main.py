@@ -13,9 +13,13 @@ if __name__ == '__main__':
     print("## Automaton ##\n")
     automaton = rta.toAutomaton(ast)
     print(automaton)
-    print("###############\n")    
+    print("###############\n")
 
     print("## Automaton Min ##\n")
     automaton = min.min(automaton)
     print(automaton)
+    automaton.goToMermaid()
+
+    print("###################\n")
+    print(automaton.checkString("azzzzzzbccccc"))
     print("###################\n")
