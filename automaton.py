@@ -20,6 +20,23 @@ class NDFA:
 
         return res
 
+    def goToMermaid(self):
+        with open("NDFA.txt", "w") as f:
+            f.write("graph TD\n")
+
+            f.write("{0}[[{0}]]\n".format(len(self.tTab) - 1))
+
+            f.write("{0}(({0}))\n".format(0))
+
+            for i in range(0, len(self.tTab)):
+                for col in range(0, 256):
+                    if(self.tTab[i][col] != -1):
+                        f.write("  " + str(i) + " --> |" + chr(col) + "| " + str(self.tTab[i][col]) + "\n")
+
+            for i in range(0, len(self.eTab)):
+                for s in self.eTab[i]:
+                    f.write("  " + str(i) + " --> |" + 'ε' + "| " + str(s) + "\n")
+
 
 class DFA:
     def __init__(self, initialState: int = 0, finalStates: List = [], tTab=[]) -> None:

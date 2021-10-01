@@ -10,16 +10,26 @@ if __name__ == '__main__':
     print(ast)
     print("\n#########\n")
 
-    print("## Automaton ##\n")
+    print("## NDFA ##\n")
     automaton = rta.toAutomaton(ast)
     print(automaton)
-    print("###############\n")
+    automaton.goToMermaid()
+    print("###########\n")
 
-    print("## Automaton Min ##\n")
+    print("## DFA ##\n")
     automaton = min.min(automaton)
     print(automaton)
     automaton.goToMermaid()
 
-    print("###################\n")
+    print("## Check Matches ##\n")
     print(automaton.checkString("azzzzzzbccccc"))
+
+    # book = open('./books/46446-0.txt', 'r')
+
+    # i = 0
+    # for l in book:
+    #     print(automaton.checkString(l))
+    #     i += 1
+    #     if i >= 56:
+    #         break
     print("###################\n")

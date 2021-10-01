@@ -92,7 +92,7 @@ def toAutomaton(tree: RegExTree):
 
         return Automaton(tTab, eTab)
 
-    if tree.root == '*':
+    if tree.root == '*' or tree.root == '+':
 
         fils = toAutomaton(tree.subTrees[0])
         tTab_f = fils.tTab
@@ -104,9 +104,10 @@ def toAutomaton(tree: RegExTree):
         eTab = [[] for i in range(0, l + 2)]
 
         eTab[0].append(1)
-        eTab[0].append(l + 1)
         eTab[l].append(l + 1)
         eTab[l].append(1)
+        if tree.root == '*':
+            eTab[0].append(l + 1)
 
         for i in range(1, l + 1):
             for col in range(0, 256):
