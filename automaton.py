@@ -86,6 +86,9 @@ class DFA:
                 currentState = self.initalState
                 wordStart = -1
         if currentState in self.finalStates:
+            print(str[wordStart:i])
+            if i == 0:
+                i = 1
             return True, wordStart, i
         else:
             return False
@@ -106,7 +109,7 @@ class DFA:
                 end = ret[2]
                 inputString = inputString[end:]
                 newStart += end
-
+            # print(ret)
         if not res or (len(res) == 1 and False in res):
             return []
         else:
