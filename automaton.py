@@ -11,12 +11,13 @@ class NDFA:
         res = "Initial state : 0\nFinal State :" + str(len(self.tTab)-1) + "\n"
         for i in range(0, len(self.eTab)):
             for s in self.eTab[i]:
-                res += "  " + str(i) +" -- epsilon --> " + str(s) + "\n"
+                res += "  " + str(i) + " -- epsilon --> " + str(s) + "\n"
 
         for i in range(0, len(self.tTab)):
             for col in range(0, 256):
                 if(self.tTab[i][col] != -1):
-                    res += "  " + str(i) + " -- " + chr(col) + " --> " + str(self.tTab[i][col]) + "\n"
+                    res += "  " + str(i) + " -- " + chr(col) + \
+                                      " --> " + str(self.tTab[i][col]) + "\n"
 
         return res
 
@@ -29,7 +30,7 @@ class NDFA:
             return False
         else:
             return True
-        
+
     def goToMermaid(self):
         with open("NDFA.txt", "w") as f:
             f.write("graph TD\n")
@@ -41,11 +42,13 @@ class NDFA:
             for i in range(0, len(self.tTab)):
                 for col in range(0, 256):
                     if(self.tTab[i][col] != -1):
-                        f.write("  " + str(i) + " --> |" + chr(col) + "| " + str(self.tTab[i][col]) + "\n")
+                        f.write("  " + str(i) + " --> |" + chr(col)
+                                + "| " + str(self.tTab[i][col]) + "\n")
 
             for i in range(0, len(self.eTab)):
                 for s in self.eTab[i]:
-                    f.write("  " + str(i) + " --> |" + 'ε' + "| " + str(s) + "\n")
+                    f.write("  " + str(i) + " --> |"
+                            + 'epsilon' + "| " + str(s) + "\n")
 
 
 class DFA:
@@ -55,12 +58,15 @@ class DFA:
         self.tTab = tTab
 
     def __str__(self) -> str:
-        res = "Initial state : " + str(self.initialState) + "\nFinal States :" + str(self.finalStates) + "\n"
+        res = "Initial state : " + \
+            str(self.initialState) + "\nFinal States :" + \
+            str(self.finalStates) + "\n"
 
         for i in range(0, len(self.tTab)):
             for col in range(0, 256):
                 if(self.tTab[i][col] != -1):
-                    res += "  " + str(i) + " -- " + chr(col) + " --> " + str(self.tTab[i][col]) + "\n"
+                    res += "  " + str(i) + " -- " + chr(col) + \
+                                      " --> " + str(self.tTab[i][col]) + "\n"
         return res
 
     def __eq__(self, o: object) -> bool:
@@ -75,8 +81,6 @@ class DFA:
         else:
             return True
 
-    
-
     def goToMermaid(self):
         with open("DFA.txt", "w") as f:
             f.write("graph TD\n")
@@ -89,9 +93,10 @@ class DFA:
             for i in range(0, len(self.tTab)):
                 for col in range(0, 256):
                     if(self.tTab[i][col] != -1):
-                        f.write("  " + str(i) + " --> |" + chr(col) + "| " + str(self.tTab[i][col]) + "\n")
+                        f.write("  " + str(i) + " --> |" + chr(col)
+                                + "| " + str(self.tTab[i][col]) + "\n")
 
-    def getNextState(self, parentId : int):
+    def getNextState(self, parentId: int):
         row = self.tTab[parentId]
         res = []
 
