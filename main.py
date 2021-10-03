@@ -22,14 +22,14 @@ if __name__ == '__main__':
     automaton.goToMermaid()
 
     print("== Check Matches ==\n")
-    print(automaton.checkString("azzzzzzbccccc"))
+    print(automaton.checkString("azzzzzzbccczzezbcc"))
 
     # book = open('./books/46446-0.txt', 'r')
-
+    #
     # i = 0
     # for l in book:
     #     print(automaton.checkString(l))
     #     i += 1
     #     if i >= 56:
     #         break
-    print("\n====================\n")
+    # print("\n====================\n")
