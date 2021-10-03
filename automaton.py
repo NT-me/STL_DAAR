@@ -34,6 +34,9 @@ class NDFA:
     def goToMermaid(self):
         with open("NDFA.txt", "w") as f:
             f.write("graph TD\n")
+            f.write("leg1((Init))\n")
+            f.write("leg2[[Final]]\n")
+            f.write("leg3[Transit state]\n")
 
             f.write("{0}[[{0}]]\n".format(len(self.tTab) - 1))
 
@@ -84,11 +87,19 @@ class DFA:
     def goToMermaid(self):
         with open("DFA.txt", "w") as f:
             f.write("graph TD\n")
+            f.write("leg0[(Init & Final)]\n")
+            f.write("leg1((Init))\n")
+            f.write("leg2[[Final]]\n")
+            f.write("leg3[Transit state]\n")
 
             for fs in self.finalStates:
-                f.write("{0}[[{0}]]\n".format(fs))
+                if fs == self.initialState:
+                    f.write("{0}[({0})]\n".format(fs))
+                elif fs != self.initialState:
+                    f.write("{0}[[{0}]]\n".format(fs))
 
-            f.write("{0}(({0}))\n".format(self.initialState))
+            if self.initialState not in self.finalStates:
+                f.write("{0}(({0}))\n".format(self.initialState))
 
             for i in range(0, len(self.tTab)):
                 for col in range(0, 256):
