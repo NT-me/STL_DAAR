@@ -35,14 +35,12 @@ class Test(unittest.TestCase):
 
         for i in range(len(self.regex)):
             # print(self.ndfa_results[i])
-            # print(rta.toAutomaton(self.ast_results[i]))
-
-            print("Testing on " + str(self.ndfa_results[i]) + " : ")
+            # print(deter.deter(self.ndfa_results[i]))
+            print("Testing on " + str(self.regex[i]) + " : ")
             self.assertEqual(deter.deter(self.ndfa_results[i]), self.dfa_results[i])
-            print("OK") 
+            print("OK")
 
         print("\n================\n")
-
 
     regex = ["ab", "a|b", "a*", "a+", "a|bc*"]
 
@@ -58,6 +56,7 @@ class Test(unittest.TestCase):
     ''' expected results for NDFA tests '''
     ndfa_results = []
 
+    # ab
     a = [[-1 for i in range(256)] for j in range(4)]
     b = [[] for i in range(4)]
     a[0][97] = 1
@@ -65,6 +64,7 @@ class Test(unittest.TestCase):
     b[1] = [2]
     ndfa_results.append(NDFA(a, b))
 
+    # a|b
     a = [[-1 for i in range(256)] for j in range(6)]
     b = [[] for i in range(6)]
     a[1][97] = 2
@@ -74,18 +74,22 @@ class Test(unittest.TestCase):
     b[4] = [5]
     ndfa_results.append(NDFA(a, b))
 
+    # a*
     a = [[-1 for i in range(256)] for j in range(4)]
     b = [[] for i in range(4)]
+    print(id(b))
     a[1][97] = 2
     b[0] = [1, 3]
     b[2] = [3, 1]
     ndfa_results.append(NDFA(a, b))
 
+    # a+
     a = a.copy()
     b = b.copy()
     b[0] = [1]
     ndfa_results.append(NDFA(a, b))
 
+    # a|bc*
     a = [[-1 for i in range(256)] for j in range(10)]
     b = [[] for i in range(10)]
     a[1][97] = 2
@@ -102,24 +106,29 @@ class Test(unittest.TestCase):
     ''' expected results for DFA tests'''
     dfa_results = []
 
+    # ab
     a = [[-1 for i in range(256)] for j in range(3)]
     a[0][97] = 1
     a[1][98] = 2
     dfa_results.append(DFA(0, [2], a))
 
+    # a|b
     a = [[-1 for i in range(256)] for j in range(3)]
     a[0][97] = 1
     a[0][98] = 2
     dfa_results.append(DFA(0, [1, 2], a))
 
+    # a*
     a = [[-1 for i in range(256)] for j in range(2)]
     a[0][97] = 1
     a[1][97] = 1
     dfa_results.append(DFA(0, [0, 1], a))
 
+    # a+
     a = a.copy()
     dfa_results.append(DFA(0, [1], a))
 
+    # a|bc*
     a = [[-1 for i in range(256)] for j in range(4)]
     a[0][97] = 1
     a[0][98] = 2

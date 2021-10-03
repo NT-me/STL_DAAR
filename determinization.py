@@ -1,16 +1,16 @@
 from enum import auto
-from automaton import DFA as Automaton
+from automaton import NDFA, DFA
 
-def deter(automaton: Automaton) -> Automaton:
+def deter(automaton: NDFA) -> DFA:
 
-    res = Automaton()
+    res = DFA()
 
     transitions = automaton.tTab
     e_transitions = automaton.eTab
 
     states = [[0]]
     states[0] = appendETransitions(states[0], [0], e_transitions)
-    print(states[0])
+    # print(states[0])
     # states[0].extend(e_transitions[0])
     states[0].sort()
 
@@ -52,17 +52,19 @@ def deter(automaton: Automaton) -> Automaton:
                 if newState not in states:
                     states.append(newState)
                     tTab[i][col] = len(states) - 1
+
+                    if final and (len(states)-1) not in res.finalStates:
+                        res.finalStates.append(len(states) - 1)
+
                 else:
                     ind = states.index(newState)
                     tTab[i][col] = ind
-
-                if final and (len(states)-1) not in res.finalStates:
-                    res.finalStates.append(len(states) - 1)
 
         i += 1
         # print(states)
 
     res.tTab = tTab
+    res.finalStates.sort()
     return res
 
 def appendETransitions(newState, next, eTab):
