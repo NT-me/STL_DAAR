@@ -1,4 +1,5 @@
 from typing import List
+from time import sleep
 
 
 class NDFA:
@@ -130,6 +131,7 @@ class DFA:
         strLen = len(str)
         currentState = self.initialState
         wordStart = -1
+
         for i in range(0, strLen):
             strchar = str[i]
             if strchar in self.getTransitionAtState(currentState):
@@ -137,16 +139,24 @@ class DFA:
                 if wordStart == -1:
                     wordStart = i
                 currentState = self.tTab[currentState][ord(strchar)]
+
             elif currentState in self.finalStates:
-                return True, wordStart, i
+                # Si on est dans un état final
+                if wordStart == -1:
+                    # return False
+                    currentState = self.initialState
+                else:
+                    return True, wordStart, i, str[wordStart:i]
+
             elif strchar not in self.getTransitionAtState(currentState):
+                # Si on est pas dans un état final et que la lettre n'a pas de
+                # transition
                 currentState = self.initialState
                 wordStart = -1
-        if currentState in self.finalStates:
-            print(str[wordStart:i])
-            if i == 0:
-                i = 1
-            return True, wordStart, i
+
+        if currentState in self.finalStates and wordStart != -1:
+            print(str)
+            return True, wordStart, i+1, str[wordStart:i+1]
         else:
             return False
 
@@ -157,16 +167,20 @@ class DFA:
         ret = True
 
         newStart = 0
-        while ret != False:
+
+        iter = 0
+        initialLen = len(inputString)
+        while ret != False and iter <= initialLen:
             ret = self.checkSubString(inputString)
+            iter += 1
 
             if ret != False:
-                res.append((ret[0], ret[1]+newStart, ret[2]+newStart))
+                res.append((ret[0], ret[1]+newStart, ret[2]+newStart, ret[3]))
                 start = ret[1]
                 end = ret[2]
                 inputString = inputString[end:]
                 newStart += end
-            # print(ret)
+
         if not res or (len(res) == 1 and False in res):
             return []
         else:
