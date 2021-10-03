@@ -1,7 +1,7 @@
 from enum import auto
 from automaton import DFA as Automaton
 
-def min(automaton: Automaton) -> Automaton:
+def deter(automaton: Automaton) -> Automaton:
 
     res = Automaton()
 
@@ -9,11 +9,17 @@ def min(automaton: Automaton) -> Automaton:
     e_transitions = automaton.eTab
 
     states = [[0]]
-    # states[0] = appendETransitions(states[0], e_transitions[0], e_transitions)
-    states[0].extend(e_transitions[0])
+    states[0] = appendETransitions(states[0], [0], e_transitions)
+    print(states[0])
+    # states[0].extend(e_transitions[0])
     states[0].sort()
 
-    res.initalState = 0
+    for s in states[0]:
+        if s == len(transitions) - 1:
+            res.finalStates.append(0)
+            break
+
+    res.initialState = 0
 
     tTab = []
 

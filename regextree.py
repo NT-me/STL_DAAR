@@ -1,5 +1,8 @@
 class RegExTree:
 
+    root: str
+    subTrees: list
+
     def __init__(self, root, subTrees=None):
         # Root value embed into this node
         self.root = root
@@ -16,3 +19,14 @@ class RegExTree:
             res += "," + str(self.subTrees[i])
 
         return res + ")"
+
+    def __eq__(self, o: object) -> bool:
+        if o == None:
+            return False
+        elif self.root == o.root:
+            for i in range(len(self.subTrees)):
+                if not self.subTrees[i] == o.subTrees[i]:
+                    return False
+            return True
+        else:
+            return False
