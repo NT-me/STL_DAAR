@@ -108,11 +108,13 @@ class DFA:
         return res
 
     def completeAutomaton(self):
+        sink = len(self.tTab)
         for char in self.getLang():
             asciichar = ord(char)
             for i in range(0, len(self.tTab)):
                 if self.tTab[i][asciichar] == -1:
-                    self.tTab[i][asciichar] = -2
+                    self.tTab[i][asciichar] = sink
+            self.tTab[len(self.tTab)][asciichar] = sink
 
     def uncompleteAutomaton(self):
         for char in self.getLang():
