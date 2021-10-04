@@ -85,6 +85,42 @@ class DFA:
         else:
             return True
 
+    def getStates(self):
+        """
+        return dict
+        ["noFinal"] = no final states
+        ["final"] = final states
+        """
+        states = [x for x in range(0, len(self.tTab))
+                  if x not in self.finalStates]
+        res = dict()
+        res["noFinal"] = states
+        res["final"] = self.finalStates
+        return res
+
+    def getLang(self):
+        res = []
+        for i in range(0, len(self.tTab)):
+            tmp = [self.tTab[i].index(ele)
+                   for ele in self.tTab[i] if ele != -1]
+            if tmp:
+                res += [chr(ele) for ele in tmp if chr(ele) not in res]
+        return res
+
+    def completeAutomaton(self):
+        for char in self.getLang():
+            asciichar = ord(char)
+            for i in range(0, len(self.tTab)):
+                if self.tTab[i][asciichar] == -1:
+                    self.tTab[i][asciichar] = -2
+
+    def uncompleteAutomaton(self):
+        for char in self.getLang():
+            asciichar = ord(char)
+            for i in range(0, len(self.tTab)):
+                if self.tTab[i][asciichar] == -2:
+                    self.tTab[i][asciichar] = -1
+
     def goToMermaid(self):
         with open("DFA.txt", "w") as f:
             f.write("graph TD\n")
