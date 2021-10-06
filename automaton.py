@@ -1,7 +1,6 @@
 from typing import List
 from time import sleep
 
-
 class NDFA:
 
     def __init__(self, tTab=[], eTab=[]) -> None:
@@ -60,6 +59,7 @@ class DFA:
         self.initialState = initialState
         self.finalStates = finalStates
         self.tTab = tTab
+        self.sink = None
 
     def __str__(self) -> str:
         res = "Initial state : " + \
@@ -85,6 +85,7 @@ class DFA:
         else:
             return True
 
+
     def getStates(self):
         """
         return dict
@@ -108,20 +109,26 @@ class DFA:
         return res
 
     def completeAutomaton(self):
-        sink = len(self.tTab)
-        for char in self.getLang():
-            asciichar = ord(char)
-            for i in range(0, len(self.tTab)):
-                if self.tTab[i][asciichar] == -1:
-                    self.tTab[i][asciichar] = sink
-            self.tTab[len(self.tTab)][asciichar] = sink
+        if not self.sink:
+            sink = len(self.tTab)
+            self.sink = sink
+            self.tTab.append([-1 for i in range(0, 256)])
 
-    def uncompleteAutomaton(self):
-        for char in self.getLang():
-            asciichar = ord(char)
-            for i in range(0, len(self.tTab)):
-                if self.tTab[i][asciichar] == -2:
-                    self.tTab[i][asciichar] = -1
+            for char in self.getLang():
+                asciichar = ord(char)
+                for i in range(0, len(self.tTab)):
+                    if self.tTab[i][asciichar] == -1:
+                        self.tTab[i][asciichar] = sink
+                    # if i == sink:
+                    #     self.tTab[i][asciichar] = sink
+
+    # TODO: Faire fonctionner cette fonction, actuellement elle fait plus ou moins dla merde
+    # def uncompleteAutomaton(self):
+    #     for char in self.getLang():
+    #         asciichar = ord(char)
+    #         for i in range(0, len(self.tTab)):
+    #             if self.tTab[i][asciichar] == -2:
+    #                 self.tTab[i][asciichar] = -1
 
     def goToMermaid(self):
         with open("DFA.txt", "w") as f:
@@ -193,7 +200,7 @@ class DFA:
                 wordStart = -1
 
         if currentState in self.finalStates and wordStart != -1:
-            print(str)
+            # print(str)
             return True, wordStart, i+1, str[wordStart:i+1]
         else:
             return False
@@ -223,3 +230,27 @@ class DFA:
             return []
         else:
             return res
+
+    def mini(self):
+        self.completeAutomaton()
+        s = self.getStates()
+
+        nestS = []
+        nestS += s["noFinal"]
+        nestS += s["final"]
+
+        descState = dict()
+        famID = 0
+        for nfs in s["noFinal"]:
+            descState[nfs] = [famID]
+        famID += 1
+        for fs in s["final"]:
+            descState[fs] = [famID]
+
+        for state in nestS:
+            sateFamId = descState[state][0]
+            for t in self.getLang():
+                nextState = self.tTab[state][ord(t)]
+                nsFamId = descState[nextState][0]
+                descState[state].append(nsFamId)
+        print(descState)
