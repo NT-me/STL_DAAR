@@ -85,7 +85,6 @@ class DFA:
         else:
             return True
 
-
     def getStates(self):
         """
         return dict
@@ -109,7 +108,20 @@ class DFA:
         return res
 
     def completeAutomaton(self):
-        if not self.sink:
+        needed = False
+
+        s = self.getStates()
+        nestS = s["noFinal"]
+        nestS += s["final"]
+
+        for char in self.getLang():
+            asciichar = ord(char)
+            for i in nestS:
+                if self.tTab[i][asciichar] == -1:
+                    needed = True
+                    break
+
+        if not self.sink and needed:
             sink = len(self.tTab)
             self.sink = sink
             self.tTab.append([-1 for i in range(0, 256)])
@@ -119,19 +131,9 @@ class DFA:
                 for i in range(0, len(self.tTab)):
                     if self.tTab[i][asciichar] == -1:
                         self.tTab[i][asciichar] = sink
-                    # if i == sink:
-                    #     self.tTab[i][asciichar] = sink
 
-    # TODO: Faire fonctionner cette fonction, actuellement elle fait plus ou moins dla merde
-    # def uncompleteAutomaton(self):
-    #     for char in self.getLang():
-    #         asciichar = ord(char)
-    #         for i in range(0, len(self.tTab)):
-    #             if self.tTab[i][asciichar] == -2:
-    #                 self.tTab[i][asciichar] = -1
-
-    def goToMermaid(self):
-        with open("DFA.txt", "w") as f:
+    def goToMermaid(self, fn=""):
+        with open("DFA"+fn+".txt", "w") as f:
             f.write("graph TD\n")
             f.write("leg0[(Init & Final)]\n")
             f.write("leg1((Init))\n")
@@ -231,6 +233,24 @@ class DFA:
         else:
             return res
 
+    def getListOfDeadStates(self) -> List:
+        res = []
+
+        s = self.getStates()
+
+        nestS = []
+        nestS += s["noFinal"]
+        nestS += s["final"]
+
+        for state in nestS:
+            nbm1 = self.tTab[state].count(-1)
+            nbself = self.tTab[state].count(state)
+
+            if (nbm1 + nbself) >= len(self.tTab[state]) and state not in self.finalStates:
+                res.append(state)
+
+        return res
+
     def mini(self):
         self.completeAutomaton()
         s = self.getStates()
@@ -247,10 +267,94 @@ class DFA:
         for fs in s["final"]:
             descState[fs] = [famID]
 
+        lastBilan = descState
+
+        flag_continue = True
+        i = 0
+
+        # Algo de moore
+
+        while flag_continue:
+            i += 1
+            for state in nestS:
+                # sateFamId = descState[state][0]
+                for t in self.getLang():
+                    nextState = self.tTab[state][ord(t)]
+                    nsFamId = descState[nextState][0]
+                    descState[state].append(nsFamId)
+
+            famId = 0
+            currentBilan = dict()
+            for desc in descState:
+                currentBilan[desc] = [famId]
+                famId += 1
+
+            for desc in descState:
+                current = descState[desc]
+
+                for state in nestS:
+                    if state != desc and current == descState[state]:
+                        currentBilan[state] = currentBilan[desc]
+
+            if currentBilan == lastBilan:
+                flag_continue = False
+            else:
+                lastBilan = currentBilan
+
+
+        # Suppression des états morts
+
+        iterSec = 0
+        while self.getListOfDeadStates() and iterSec <= len(nestS):
+            iterSec += 1
+
+            for deadState in self.getListOfDeadStates():
+                del(self.tTab[deadState])
+                del(currentBilan[deadState])
+
+                nestS.remove(deadState)
+                for state in nestS:
+                    for asciichar in self.getLang():
+                        if self.tTab[state][ord(asciichar)] == deadState:
+                            self.tTab[state][ord(asciichar)] = -1
+
+        # Changement des états finaux
+        oldFs = self.finalStates
+        newFs = []
+
+        for ofs in oldFs:
+            s = currentBilan[ofs][0]
+            if s not in newFs:
+                newFs.append(s)
+
+        self.finalStates = newFs
+
+        # nouvelle matrice
+        matrixCanva = dict()
+        for e in currentBilan:
+            newStateId = currentBilan[e][0]
+            try:
+                matrixCanva[newStateId].append(e)
+            except KeyError:
+                matrixCanva[newStateId] = [e]
+
+        matrixCanvaRes = dict()
+        i = 0
+        for e in matrixCanva:
+            i += 1
+            matrixCanvaRes[i] = [e]
+
+        matrixCanva = matrixCanvaRes
+
+        newtTab = [[-1 for i in range(0, 256)] for j in range(0, len(matrixCanva)+1)]
+
         for state in nestS:
-            sateFamId = descState[state][0]
-            for t in self.getLang():
-                nextState = self.tTab[state][ord(t)]
-                nsFamId = descState[nextState][0]
-                descState[state].append(nsFamId)
-        print(descState)
+            for asciichar in self.getLang():
+                tDest = self.tTab[state][ord(asciichar)]
+                if tDest != -1:
+                    print(state)
+                    newtTab[currentBilan[state][0]][ord(asciichar)] = currentBilan[tDest][0]
+        self.tTab = newtTab
+
+        # print(currentBilan)
+        # print(matrixCanva)

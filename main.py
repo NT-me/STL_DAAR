@@ -19,13 +19,19 @@ if __name__ == '__main__':
     print("== DFA ==\n")
     automaton = deter.deter(automaton)
     print(automaton)
-    automaton.completeAutomaton()
     automaton.goToMermaid()
+    automaton.completeAutomaton()
+    automaton.goToMermaid("complete")
+
+
+    print("== Mini ==\n")
+    automaton.mini()
+    automaton.goToMermaid("afterMini")
+
 
     print("== Check Matches ==\n")
-    print(automaton.checkString("azzzzzzbccczzezbcc"))
+    print(automaton.checkString("azzzzzaaaaaazbccczzezbcc"))
 
-    automaton.mini()
 
     # book = open('./books/46446-0.txt', 'r')
     #
