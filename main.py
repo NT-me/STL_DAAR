@@ -1,49 +1,52 @@
 import regex as r
 import regextreeToAutomaton as rta
 import determinization as deter
-import kmp as kmp
+import printer as printer
+import sys
 
 if __name__ == '__main__':
-    inputRegex = input("Entrez une Regex valide:\n")
+    print(sys.argv)
+
+    if len(sys.argv) < 3:
+        print("Error : Not enough arguments")
+        sys.exit(1)
+
+    inputRegex = sys.argv[1]
+    fileName = sys.argv[2]
+
+    try:
+        file = open(fileName, 'r')
+    except IOError:
+        print("the file " + "'" + fileName + "'" + " doesn't exist")
+        sys.exit(1)
+
+    # inputRegex = input("Entrez une String ou une Regex:\n")
+
+    ast = r.preparse(inputRegex)
+
+    if ast.isWord():
+        printer.egrep(0, file, ast)
+
+    else:
+        automatonNDFA = rta.toAutomaton(ast)
+        automatonDFA = deter.deter(automatonNDFA)
+        printer.egrep(1, file, automatonDFA)
 
     print("\n== AST ==\n")
-    ast = r.preparse(str(inputRegex))
     print(ast)
     print("\n==========\n")
 
-    if ast.isWord():
-        print("KMP")
-        word = ast.toWord() 
-        print(word)
-
-        book = open('./books/46446-0.txt', 'r')
-
-        i = 0
-        for l in book:
-            # print(kmp.kmp(word, l))
-            matches = kmp.kmp(word, l)
-            for m in matches:
-                print("Match found on line " + str(i) + " : " + l[m[0]:m[1]+1])
-            i += 1
-            if i >= 56:
-                break
-
-
-    else:
-
+    if not ast.isWord():
         print("== NDFA ==\n")
-        automaton = rta.toAutomaton(ast)
-        print(automaton)
-        automaton.goToMermaid()
+        print(automatonNDFA)
+        automatonNDFA.goToMermaid()
         print("==========\n")
 
         print("== DFA ==\n")
-        automaton = deter.deter(automaton)
-        print(automaton)
-        automaton.goToMermaid()
+        print(automatonDFA)
+        automatonDFA.goToMermaid()
 
-        print("== Check Matches ==\n")
-        print(automaton.checkString("azzzzzzbccczzezbcc"))
+        # print(automaton.checkString("azzzzzzbccczzezbcc"))
 
     # book = open('./books/46446-0.txt', 'r')
     #
