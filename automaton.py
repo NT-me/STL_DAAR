@@ -210,8 +210,10 @@ class DFA:
                     wordStart = -1
 
         if currentState in self.finalStates and wordStart != -1:
-            # print(str)
-            return True, wordStart, i+1, str[wordStart:i+1]
+
+            print(str)
+            return True, wordStart, i, str[wordStart:i+1]
+
         else:
             return False
 
@@ -230,7 +232,7 @@ class DFA:
             iter += 1
 
             if ret != False:
-                res.append((ret[0], ret[1]+newStart, ret[2]+newStart, ret[3]))
+                res.append((ret[1]+newStart, ret[2]+newStart))
                 start = ret[1]
                 end = ret[2]
                 inputString = inputString[end:]

@@ -1,37 +1,52 @@
 import regex as r
 import regextreeToAutomaton as rta
 import determinization as deter
+import printer as printer
+import sys
 
 if __name__ == '__main__':
-    inputRegex = input("Entrez une Regex valide:\n")
+    print(sys.argv)
+
+    if len(sys.argv) < 3:
+        print("Error : Not enough arguments")
+        sys.exit(1)
+
+    inputRegex = sys.argv[1]
+    fileName = sys.argv[2]
+
+    try:
+        file = open(fileName, 'r')
+    except IOError:
+        print("the file " + "'" + fileName + "'" + " doesn't exist")
+        sys.exit(1)
+
+    # inputRegex = input("Entrez une String ou une Regex:\n")
+
+    ast = r.preparse(inputRegex)
+
+    if ast.isWord():
+        printer.egrep(0, file, ast)
+
+    else:
+        automatonNDFA = rta.toAutomaton(ast)
+        automatonDFA = deter.deter(automatonNDFA)
+        printer.egrep(1, file, automatonDFA)
 
     print("\n== AST ==\n")
-    ast = r.preparse(str(inputRegex))
     print(ast)
     print("\n==========\n")
 
-    print("== NDFA ==\n")
-    automaton = rta.toAutomaton(ast)
-    print(automaton)
-    automaton.goToMermaid()
-    print("==========\n")
+    if not ast.isWord():
+        print("== NDFA ==\n")
+        print(automatonNDFA)
+        automatonNDFA.goToMermaid()
+        print("==========\n")
 
-    print("== DFA ==\n")
-    automaton = deter.deter(automaton)
-    print(automaton)
-    automaton.goToMermaid()
-    automaton.completeAutomaton()
-    automaton.goToMermaid("complete")
+        print("== DFA ==\n")
+        print(automatonDFA)
+        automatonDFA.goToMermaid()
 
-
-    print("== Mini ==\n")
-    automaton.mini()
-    automaton.goToMermaid("afterMini")
-
-
-    print("== Check Matches ==\n")
-    print(automaton.checkString("azzzzzaaaaaazbccczzezbcc"))
-
+        # print(automaton.checkString("azzzzzzbccczzezbcc"))
 
     # book = open('./books/46446-0.txt', 'r')
     #
