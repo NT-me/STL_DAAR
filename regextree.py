@@ -30,3 +30,24 @@ class RegExTree:
             return True
         else:
             return False
+
+    def isWord(self) -> bool:
+        if self.root in ['+', '*', '|']:
+            return False
+        
+        for sub in self.subTrees:
+            if not sub.isWord():
+                return False
+        
+        return True
+
+
+    def toWord(self) -> str:
+        if len(self.subTrees) == 0:
+            return self.root
+
+        res = ""
+        for sub in self.subTrees:
+            res += sub.toWord()
+
+        return res
