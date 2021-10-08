@@ -186,25 +186,28 @@ class DFA:
 
         for i in range(0, strLen):
             strchar = str[i]
-            if strchar in self.getTransitionAtState(currentState):
-                # Si la lettre est dans les transisition de l'état
-                if wordStart == -1:
-                    wordStart = i
-                currentState = self.tTab[currentState][ord(strchar)]
+            if ord(strchar) <= len(self.tTab[currentState]):
+                # if strchar in self.getTransitionAtState(currentState):
+                if self.tTab[currentState][ord(strchar)] != -1:
+                    # Si la lettre est dans les transisition de l'état
+                    if wordStart == -1:
+                        wordStart = i
+                    currentState = self.tTab[currentState][ord(strchar)]
 
-            elif currentState in self.finalStates:
-                # Si on est dans un état final
-                if wordStart == -1:
-                    # return False
+                elif currentState in self.finalStates:
+                    # Si on est dans un état final
+                    if wordStart == -1:
+                        # return False
+                        currentState = self.initialState
+                    else:
+                        return True, wordStart, i, str[wordStart:i]
+
+                # elif strchar not in self.getTransitionAtState(currentState):
+                elif self.tTab[currentState][ord(strchar)] == -1:
+                    # Si on est pas dans un état final et que la lettre n'a pas de
+                    # transition
                     currentState = self.initialState
-                else:
-                    return True, wordStart, i, str[wordStart:i]
-
-            elif strchar not in self.getTransitionAtState(currentState):
-                # Si on est pas dans un état final et que la lettre n'a pas de
-                # transition
-                currentState = self.initialState
-                wordStart = -1
+                    wordStart = -1
 
         if currentState in self.finalStates and wordStart != -1:
             # print(str)
