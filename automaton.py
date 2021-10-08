@@ -1,8 +1,8 @@
 from typing import List
 from time import sleep
 
-class NDFA:
 
+class NDFA:
     def __init__(self, tTab=[], eTab=[]) -> None:
         self.tTab = tTab
         self.eTab = eTab
@@ -355,6 +355,3 @@ class DFA:
                     print(state)
                     newtTab[currentBilan[state][0]][ord(asciichar)] = currentBilan[tDest][0]
         self.tTab = newtTab
-
-        # print(currentBilan)
-        # print(matrixCanva)
