@@ -60,6 +60,7 @@ class DFA:
         self.finalStates = finalStates
         self.tTab = tTab
         self.sink = None
+        self.lang = None
 
     def __str__(self) -> str:
         res = "Initial state : " + \
@@ -99,13 +100,17 @@ class DFA:
         return res
 
     def getLang(self):
-        res = []
-        for i in range(0, len(self.tTab)):
-            tmp = [self.tTab[i].index(ele)
-                   for ele in self.tTab[i] if ele != -1]
-            if tmp:
-                res += [chr(ele) for ele in tmp if chr(ele) not in res]
-        return res
+        if not self.lang:
+            res = []
+            for i in range(0, len(self.tTab)):
+                tmp = [self.tTab[i].index(ele)
+                       for ele in self.tTab[i] if ele != -1]
+                if tmp:
+                    res += [chr(ele) for ele in tmp if chr(ele) not in res]
+            self.lang = res
+            return res
+        else:
+            return self.lang
 
     def completeAutomaton(self):
         needed = False
@@ -167,9 +172,9 @@ class DFA:
     def getTransitionAtState(self, parentId):
         row = self.tTab[parentId]
         res = []
-        for i in range(0, len(row)):
-            if row[i] != -1:
-                res.append(chr(i))
+        for i in self.getLang():
+            if row[ord(i)] != -1:
+                res.append(i)
         return res
 
     def checkSubString(self, str="") -> bool:
