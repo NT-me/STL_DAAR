@@ -38,6 +38,7 @@ if __name__ == '__main__':
     else:
         automatonNDFA = rta.toAutomaton(ast)
         automatonDFA = deter.deter(automatonNDFA)
+        automatonDFA.mini()
         printer.egrep(1, file, automatonDFA)
 
     if viewMode:

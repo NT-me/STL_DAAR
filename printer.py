@@ -42,6 +42,8 @@ def egrep(regexMode, file, match):
     for l in file:
         if regexMode:
             matches = match.checkString(l)
+            if not matches:
+                matches = []
         else:
             matches = kmp.kmp(match, l)
 
@@ -56,3 +58,4 @@ def egrep(regexMode, file, match):
             print(l[start:])
 
     print(str(nbMatches) + " matches found")
+
