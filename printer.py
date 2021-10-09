@@ -37,6 +37,8 @@ def egrep(regexMode, file, match):
     for l in file:
         if regexMode:
             matches = match.checkString(l)
+            if not matches:
+                matches = []
         else:
             matches = kmp.kmp(match, l)
 

@@ -177,82 +177,53 @@ class DFA:
                 res.append(i)
         return res
 
-    def checkSubString(self, str="") -> bool:
-        if str == "":
-            return False
-        strLen = len(str)
+    def checkSubString(self, line="") -> bool:
+        res = []
+        strlen = len(line)
+        rowlen = len(self.tTab[self.initialState])
         currentState = self.initialState
+        i = 0
         wordStart = -1
 
-        for i in range(0, strLen):
-            strchar = ord(str[i])
-            if strchar <= len(self.tTab[currentState]):
-                # if strchar in self.getTransitionAtState(currentState):
-                if self.tTab[currentState][strchar] != -1:
-                    # Si la lettre est dans les transisition de l'état
+        for c in line:
+            asciiChar = ord(c)
+
+            # Traitement exclusif des caractères ascii
+            if asciiChar <= rowlen:
+                next = self.tTab[currentState][asciiChar]
+
+                if next != -1:
+                    # Cas où on peut avancer dans l'automate
+                    currentState = next
                     if wordStart == -1:
                         wordStart = i
-                    currentState = self.tTab[currentState][strchar]
-                    continue
 
-                elif currentState in self.finalStates:
-                    # Si on est dans un état final
-                    if wordStart == -1:
-                        # return False
-                        currentState = self.initialState
+                else:
+                    if currentState in self.finalStates:
+                        # Cas où on n'avance plus et c'est un état final
+                        if wordStart != -1:
+                            res.append((wordStart, i))
+
+                    # Cas où on n'avance plus
+                    if self.tTab[self.initialState][asciiChar] != -1:
+                        # On vérifie que depuis l'état inital on puisse avancer
+                        currentState = self.tTab[self.initialState][asciiChar]
+                        wordStart = i
+
                     else:
-                        return True, wordStart, i
+                        currentState = self.initialState
+                        wordStart = -1
 
-                # elif strchar not in self.getTransitionAtState(currentState):
-                elif self.tTab[currentState][strchar] == -1:
-                    # Si on est pas dans un état final et que la lettre n'a pas de
-                    # transition
-                    currentState = self.initialState
-                    wordStart = -1
-                    continue
-
-        if currentState in self.finalStates and wordStart != -1:
-            # print(str)
-            return True, wordStart, i
-
-        else:
-            return False
-
+            i += 1
+        return res
 
     def checkString(self, inputString=""):
-        res = []
-        ret = True
-
-        newStart = 0
-
-        iter = 0
-        initialLen = len(inputString)
-
-        # while ret != False and iter <= initialLen:
-        #     ret = self.checkSubString(inputString)
-        #     iter += 1
-        #
-        #     if ret != False:
-        #         res.append((ret[1]+newStart, ret[2]+newStart))
-        #         start = ret[1]
-        #         end = ret[2]
-        #         inputString = inputString[end:]
-        #         newStart += end
-
         ret = self.checkSubString(inputString)
-        iter += 1
 
-        if ret != False:
-            res.append((ret[1]+newStart, ret[2]+newStart))
-            start = ret[1]
-            end = ret[2]
-            inputString = inputString[end:]
-            newStart += end
-
-        if not res or (len(res) == 1 and False in res):
-            return []
+        if ret:
+            return ret
         else:
-            return res
+            return False
 
     def getListOfDeadStates(self) -> List:
         res = []
@@ -373,6 +344,6 @@ class DFA:
             for asciichar in self.getLang():
                 tDest = self.tTab[state][ord(asciichar)]
                 if tDest != -1:
-                    print(state)
+                    #print(state)
                     newtTab[currentBilan[state][0]][ord(asciichar)] = currentBilan[tDest][0]
         self.tTab = newtTab
