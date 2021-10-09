@@ -8,8 +8,7 @@ def precalcul(s):
             prefix += s[j]
             if suffix in prefix:
                 carryOver[i] += 1
-                j = 0
-                if i > 1:
+                if i-len(suffix) > 0:
                     suffix = s[i-len(suffix)] + suffix
                 else:
                     break
@@ -24,7 +23,7 @@ def kmp(match, search):
     lps = precalcul(match)
 
     i = 0
-    while i <= len(search) - len(match) + 1:
+    while i <= len(search) - len(match):
         if search[i] == match[0]:
             found = True
             for j in range(1, len(match)):
@@ -33,7 +32,7 @@ def kmp(match, search):
                     i += lps[j]
                     break
             if found:
-                res.append([i, i + len(match) - 1])
+                res.append([i, i + len(match)])
                 i += len(match) - 1
         i += 1
     return res

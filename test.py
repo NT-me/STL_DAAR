@@ -4,8 +4,13 @@ from regextree import RegExTree
 import regextreeToAutomaton as rta
 import determinization as deter
 from automaton import NDFA, DFA
+import kmp
 
 class Test(unittest.TestCase):
+
+    #################
+    ## REGEX TESTS ##
+    #################
 
     def test_ast(self):
         print("== AST Tests ==\n")
@@ -36,11 +41,25 @@ class Test(unittest.TestCase):
         for i in range(len(self.regex)):
             # print(self.ndfa_results[i])
             # print(deter.deter(self.ndfa_results[i]))
+            
             print("Testing on " + str(self.regex[i]) + " : ")
             self.assertEqual(deter.deter(self.ndfa_results[i]), self.dfa_results[i])
             print("OK")
 
         print("\n================\n")
+
+    """ def test_minimization(self):
+        print("\n== DFA Tests ==\n")
+
+        for i in range(len(self.regex)):
+            # print(self.ndfa_results[i])
+            # print(deter.deter(self.ndfa_results[i]))
+            
+            print("Testing on " + str(self.regex[i]) + " : ")
+            self.assertEqual(deter.deter(self.ndfa_results[i]), self.dfa_results[i])
+            print("OK")
+
+        print("\n================\n") """
 
     regex = ["ab", "a|b", "a*", "a+", "a|bc*"]
 
@@ -135,6 +154,64 @@ class Test(unittest.TestCase):
     a[2][99] = 3
     a[3][99] = 3
     dfa_results.append(DFA(0, [1, 2, 3], a))
+
+    ###############
+    ## KMP TESTS ##
+    ###############
+
+    def test_precalcul_kmp(self):
+        print("\n== PRECALCUL KMP ==\n")
+
+        for i in range(len(self.words)):
+            # print(self.ndfa_results[i])
+            # print(deter.deter(self.ndfa_results[i]))
+            
+            print("Testing on " + str(self.words[i]) + " : ")
+            self.assertEqual(kmp.precalcul(self.words[i]), self.precalcul_kmp_results[i])
+            print("OK")
+
+        print("\n===================\n")
+
+    def test_kmp(self):
+        print("\n== KMP ==\n")
+
+        for i in range(len(self.kmp_words)):
+            # print(self.ndfa_results[i])
+            # print(deter.deter(self.ndfa_results[i]))
+            
+            print("Testing on " + str(self.kmp_words[i]) + " : ")
+            self.assertEqual(kmp.kmp(self.kmp_words[i], self.text), self.kmp_results[i])
+            print("OK")
+
+        print("\n=========\n")
+
+    words = ["AAAA", "ABCDE", "AABAACAABAA", "AAACAAAAAC", "AAABAAA", "mamamia", "chicha", "Sargon"]
+    text = "lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at condimentum lacus, nec finibus orci. Nunc in lectus condimentum, egestas risus a, semper erat. Donec vitae lorem id metus venenatis aliquet ac in nisl. Donec lacinia nibh eget leo mattis tincidunt. Nulla nibh lacus, condimentum eu est non, dictum euismod libero. Aenean tincidunt arcu mauris, a blandit lectus volutpat vel. Curabitur bibendum mi consectetur nulla venenatis, eget ultrices diam iaculis. Maecenas condimentum, tortor sit amet vestibulum semper, turpis velit rhoncus mi, nec gravida risus neque vitae urna. Quisque tincidunt dignissim est, eget dictum sem congue ac. Phasellus vestibulum aliquam lorem"
+
+    ''' expected results for precalcul_kmp '''
+
+    precalcul_kmp_results = [
+        [0, 1, 2, 3],
+        [0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 2, 0, 1, 2, 3, 4, 5],
+        [0, 1, 2, 0, 1, 2, 3, 3, 4, 4],
+        [0, 1, 2, 0, 1, 2, 3],
+        [0, 0, 1, 2, 3, 0, 1],
+        [0, 0, 0, 1, 2, 0],
+        [0, 0, 0, 0, 0, 0]
+    ]
+
+    ''' expected results for kmp '''
+
+    kmp_words = ["lorem", "Donec", "mi", "est", "um"]
+
+    kmp_results = [
+        [[0, 5], [173, 178], [676, 681]],
+        [[161, 166], [218, 223]],
+        [[409, 411], [547, 549]],
+        [[133, 136], [297, 300], [508, 511], [615, 618], [658, 661]],
+        [[9, 11], [75, 77], [127, 129], [291, 293], [310, 312], [406, 408], [487, 489], [515, 517], [629, 631], [665, 667]]
+    ]
 
 
 if __name__ == "__main__":
