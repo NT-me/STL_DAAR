@@ -185,14 +185,15 @@ class DFA:
         wordStart = -1
 
         for i in range(0, strLen):
-            strchar = str[i]
-            if ord(strchar) <= len(self.tTab[currentState]):
+            strchar = ord(str[i])
+            if strchar <= len(self.tTab[currentState]):
                 # if strchar in self.getTransitionAtState(currentState):
-                if self.tTab[currentState][ord(strchar)] != -1:
+                if self.tTab[currentState][strchar] != -1:
                     # Si la lettre est dans les transisition de l'état
                     if wordStart == -1:
                         wordStart = i
-                    currentState = self.tTab[currentState][ord(strchar)]
+                    currentState = self.tTab[currentState][strchar]
+                    continue
 
                 elif currentState in self.finalStates:
                     # Si on est dans un état final
@@ -200,24 +201,23 @@ class DFA:
                         # return False
                         currentState = self.initialState
                     else:
-                        return True, wordStart, i, str[wordStart:i]
+                        return True, wordStart, i
 
                 # elif strchar not in self.getTransitionAtState(currentState):
-                elif self.tTab[currentState][ord(strchar)] == -1:
+                elif self.tTab[currentState][strchar] == -1:
                     # Si on est pas dans un état final et que la lettre n'a pas de
                     # transition
                     currentState = self.initialState
                     wordStart = -1
+                    continue
 
         if currentState in self.finalStates and wordStart != -1:
-
-            print(str)
-            return True, wordStart, i, str[wordStart:i+1]
+            # print(str)
+            return True, wordStart, i
 
         else:
             return False
 
-        strLen = len(str)
 
     def checkString(self, inputString=""):
         res = []
@@ -227,16 +227,27 @@ class DFA:
 
         iter = 0
         initialLen = len(inputString)
-        while ret != False and iter <= initialLen:
-            ret = self.checkSubString(inputString)
-            iter += 1
 
-            if ret != False:
-                res.append((ret[1]+newStart, ret[2]+newStart))
-                start = ret[1]
-                end = ret[2]
-                inputString = inputString[end:]
-                newStart += end
+        # while ret != False and iter <= initialLen:
+        #     ret = self.checkSubString(inputString)
+        #     iter += 1
+        #
+        #     if ret != False:
+        #         res.append((ret[1]+newStart, ret[2]+newStart))
+        #         start = ret[1]
+        #         end = ret[2]
+        #         inputString = inputString[end:]
+        #         newStart += end
+
+        ret = self.checkSubString(inputString)
+        iter += 1
+
+        if ret != False:
+            res.append((ret[1]+newStart, ret[2]+newStart))
+            start = ret[1]
+            end = ret[2]
+            inputString = inputString[end:]
+            newStart += end
 
         if not res or (len(res) == 1 and False in res):
             return []
