@@ -1,4 +1,6 @@
 import unittest
+unittest.TestLoader.sortTestMethodsUsing = None
+
 import regex as r
 from regextree import RegExTree
 import regextreeToAutomaton as rta
@@ -48,18 +50,20 @@ class Test(unittest.TestCase):
 
         print("\n================\n")
 
-    """ def test_minimization(self):
-        print("\n== DFA Tests ==\n")
+    def test_minimization(self):
+        print("\n== Minimization Tests ==\n")
 
         for i in range(len(self.regex)):
-            # print(self.ndfa_results[i])
-            # print(deter.deter(self.ndfa_results[i]))
+            self.dfa_results[i].mini()
+
+            print(self.dfa_results[i])
+            print(self.min_results[i])
             
             print("Testing on " + str(self.regex[i]) + " : ")
-            self.assertEqual(deter.deter(self.ndfa_results[i]), self.dfa_results[i])
+            self.assertEqual(self.dfa_results[i], self.min_results[i])
             print("OK")
 
-        print("\n================\n") """
+        print("\n========================\n")
 
     regex = ["ab", "a|b", "a*", "a+", "a|bc*"]
 
@@ -155,6 +159,45 @@ class Test(unittest.TestCase):
     a[3][99] = 3
     dfa_results.append(DFA(0, [1, 2, 3], a))
 
+    ''' expected results for minimization '''
+    min_results = []
+
+    # ab
+    a = [[-1 for i in range(256)] for j in range(3)]
+    a[0][97] = 1
+    a[1][98] = 2
+    min_results.append(DFA(0, [2], a))
+
+    # a|b
+    a = [[-1 for i in range(256)] for j in range(3)]
+    a[0][97] = 1
+    a[0][98] = 2
+    min_results.append(DFA(0, [1, 2], a))
+
+    # a*
+    a = [[-1 for i in range(256)] for j in range(2)]
+    a[0][97] = 0
+    min_results.append(DFA(0, [0], a))
+
+    # a+
+    a = a.copy()
+    min_results.append(DFA(0, [1], a))
+
+    # a|bc*
+    a = [[-1 for i in range(256)] for j in range(4)]
+    a[0][97] = 1
+    a[0][98] = 2
+    a[2][99] = 2
+    min_results.append(DFA(0, [1, 2, 3], a))
+
+    # a*
+    min_results[2].tTab[0][97] = 0
+    min_results[2].tTab[1][97] = -1
+    min_results[2].finalStates = [0]
+
+    min_results[4].tTab[2][99] = 2
+    min_results[4].tTab[3][99] = -1
+
     ###############
     ## KMP TESTS ##
     ###############
@@ -175,11 +218,13 @@ class Test(unittest.TestCase):
     def test_kmp(self):
         print("\n== KMP ==\n")
 
+        print("Testing on : " + self.text + "\n")
+
         for i in range(len(self.kmp_words)):
             # print(self.ndfa_results[i])
             # print(deter.deter(self.ndfa_results[i]))
             
-            print("Testing on " + str(self.kmp_words[i]) + " : ")
+            print("Searching for " + str(self.kmp_words[i]) + " : ")
             self.assertEqual(kmp.kmp(self.kmp_words[i], self.text), self.kmp_results[i])
             print("OK")
 

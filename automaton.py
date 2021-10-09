@@ -211,7 +211,7 @@ class DFA:
 
         if currentState in self.finalStates and wordStart != -1:
 
-            print(str)
+            # print(str)
             return True, wordStart, i, str[wordStart:i+1]
 
         else:
@@ -362,6 +362,6 @@ class DFA:
             for asciichar in self.getLang():
                 tDest = self.tTab[state][ord(asciichar)]
                 if tDest != -1:
-                    print(state)
+                    # print(state)
                     newtTab[currentBilan[state][0]][ord(asciichar)] = currentBilan[tDest][0]
         self.tTab = newtTab
