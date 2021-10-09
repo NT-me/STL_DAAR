@@ -50,7 +50,9 @@ def preparse(inputRegex):
                 char = sv.STAR
 
         if not justreadPtc:
-            result.append(Ret(char, []))
+            if char != sv.CONCAT:
+                # Retrait des .
+                result.append(Ret(char, []))
         else:
             justreadPtc = False
 

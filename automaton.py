@@ -1,5 +1,6 @@
 from typing import List
 from time import sleep
+import utils as u
 
 
 class NDFA:
@@ -310,6 +311,7 @@ class DFA:
                     for asciichar in self.getLang():
                         if self.tTab[state][ord(asciichar)] == deadState:
                             self.tTab[state][ord(asciichar)] = -1
+        currentBilan = u.reIndexDict(currentBilan)
 
         # Changement des états finaux
         oldFs = self.finalStates
@@ -346,4 +348,6 @@ class DFA:
                 tDest = self.tTab[state][ord(asciichar)]
                 if tDest != -1:
                     newtTab[currentBilan[state][0]][ord(asciichar)] = currentBilan[tDest][0]
+
+
         self.tTab = newtTab

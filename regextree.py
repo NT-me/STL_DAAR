@@ -34,11 +34,11 @@ class RegExTree:
     def isWord(self) -> bool:
         if self.root in ['+', '*', '|']:
             return False
-        
+
         for sub in self.subTrees:
             if not sub.isWord():
                 return False
-        
+
         return True
 
 
