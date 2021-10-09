@@ -3,7 +3,7 @@ from automaton import NDFA, DFA
 
 def deter(automaton: NDFA) -> DFA:
 
-    res = DFA()
+    res = DFA(0, [], [])
 
     transitions = automaton.tTab
     e_transitions = automaton.eTab

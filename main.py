@@ -5,7 +5,6 @@ import printer as printer
 import sys
 
 if __name__ == '__main__':
-    print(sys.argv)
 
     if len(sys.argv) < 3:
         print("Error : Not enough arguments")
@@ -13,6 +12,15 @@ if __name__ == '__main__':
 
     inputRegex = sys.argv[1]
     fileName = sys.argv[2]
+
+    viewMode = False
+
+    if len(sys.argv) > 3:
+        if sys.argv[3] == '-v' or sys.argv[3] == '-view':
+            viewMode = True
+        else:
+            print("Error : invalid option -- " + "'" + sys.argv[3] + "'")
+            sys.exit(1)
 
     try:
         file = open(fileName, 'r')
@@ -33,28 +41,18 @@ if __name__ == '__main__':
         automatonDFA.mini()
         printer.egrep(1, file, automatonDFA)
 
-    print("\n== AST ==\n")
-    print(ast)
-    print("\n==========\n")
+    if viewMode:
 
-    if not ast.isWord():
-        print("== NDFA ==\n")
-        print(automatonNDFA)
-        automatonNDFA.goToMermaid()
-        print("==========\n")
+        print("\n== AST ==\n")
+        print(ast)
+        print("\n==========\n")
 
-        print("== DFA ==\n")
-        print(automatonDFA)
-        automatonDFA.goToMermaid()
+        if not ast.isWord():
+            print("== NDFA ==\n")
+            print(automatonNDFA)
+            automatonNDFA.goToMermaid()
+            print("==========\n")
 
-        # print(automaton.checkString("azzzzzzbccczzezbcc"))
-
-    # book = open('./books/46446-0.txt', 'r')
-    #
-    # i = 0
-    # for l in book:
-    #     print(automaton.checkString(l))
-    #     i += 1
-    #     if i >= 56:
-    #         break
-    # print("\n====================\n")
+            print("== DFA ==\n")
+            print(automatonDFA)
+            automatonDFA.goToMermaid()
