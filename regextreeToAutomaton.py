@@ -120,32 +120,6 @@ def toAutomaton(tree: RegExTree):
 
         return Automaton(tTab, eTab)
 
-    if tree.root == '+':
-
-        fils = toAutomaton(tree.subTrees[0])
-        tTab_f = fils.tTab
-        eTab_f = fils.eTab
-
-        l = len(tTab_f)
-
-        tTab = [[-1 for i in range(0, 256)] for j in range(0, l + 2)]
-        eTab = [[] for i in range(0, l + 2)]
-
-        eTab[0].append(1)
-        eTab[0].append(l + 1)
-        eTab[l].append(l + 1)
-
-        for i in range(1, l + 1):
-            for col in range(0, 256):
-                if tTab_f[i-1][col] != -1:
-                    tTab[i][col] = tTab_f[i-1][col]
-
-        for i in range(1, l + 1):
-            for s in eTab_f[i-1]:
-                eTab[i].append(s+1)
-
-        return Automaton(tTab, eTab)
-
     return None
 #############
 
