@@ -265,15 +265,11 @@ class DFA:
             descState[fs] = [famID]
             lastBilan[fs] = [famID]
 
-
-        # print(lastBilan)
-
         flag_continue = True
         i = 0
 
         # Algo de moore
         while flag_continue:
-            print("====")
             currentBilan = dict()
 
             i += 1
@@ -282,10 +278,6 @@ class DFA:
                     nextState = self.tTab[state][ord(t)]
                     nsFamId = descState[nextState][0]
                     descState[state].append(nsFamId)
-
-                    print("currentBilan :{}".format(currentBilan))
-                    print("lastBilan :{}".format(lastBilan))
-                    print("descState :{}".format(descState))
             idfam = 0
             for desc_0 in descState:
                 for desc_1 in descState:
@@ -354,6 +346,5 @@ class DFA:
                 tDest = self.tTab[state][ord(asciichar)]
                 if tDest != -1:
                     newtTab[currentBilan[state][0]][ord(asciichar)] = currentBilan[tDest][0]
-
 
         self.tTab = newtTab
