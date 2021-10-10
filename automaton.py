@@ -1,5 +1,6 @@
 from typing import List
 from time import sleep
+import copy
 import utils as u
 
 
@@ -211,7 +212,6 @@ class DFA:
                         currentState = self.tTab[self.initialState][asciiChar]
                         wordStart = i
 
-
                     else:
                         currentState = self.initialState
                         wordStart = -1
@@ -254,50 +254,56 @@ class DFA:
         nestS += s["final"]
 
         descState = dict()
+        lastBilan = dict()
+
         famID = 0
         for nfs in s["noFinal"]:
             descState[nfs] = [famID]
+            lastBilan[nfs] = [famID]
         famID += 1
         for fs in s["final"]:
             descState[fs] = [famID]
+            lastBilan[fs] = [famID]
 
-        lastBilan = descState
+
+        # print(lastBilan)
 
         flag_continue = True
         i = 0
 
         # Algo de moore
-
         while flag_continue:
+            print("====")
+            currentBilan = dict()
+
             i += 1
             for state in nestS:
-                # sateFamId = descState[state][0]
                 for t in self.getLang():
                     nextState = self.tTab[state][ord(t)]
                     nsFamId = descState[nextState][0]
                     descState[state].append(nsFamId)
 
-            famId = 0
-            currentBilan = dict()
-            for desc in descState:
-                currentBilan[desc] = [famId]
-                famId += 1
-
-            for desc in descState:
-                current = descState[desc]
-
-                for state in nestS:
-                    if state != desc and current == descState[state]:
-                        currentBilan[state] = currentBilan[desc]
+                    print("currentBilan :{}".format(currentBilan))
+                    print("lastBilan :{}".format(lastBilan))
+                    print("descState :{}".format(descState))
+            idfam = 0
+            for desc_0 in descState:
+                for desc_1 in descState:
+                    if descState[desc_0] == descState[desc_1]:
+                        if desc_0 in currentBilan:
+                            currentBilan[desc_1] = copy.deepcopy(currentBilan[desc_0])
+                        else:
+                            idfam += 1
+                            currentBilan[desc_0] = [idfam]
+                            currentBilan[desc_1] = [idfam]
 
             if currentBilan == lastBilan:
                 flag_continue = False
             else:
-                lastBilan = currentBilan
-
+                lastBilan = copy.deepcopy(currentBilan)
+                descState = copy.deepcopy(currentBilan)
 
         # Suppression des états morts
-
         iterSec = 0
         while self.getListOfDeadStates() and iterSec <= len(nestS):
             iterSec += 1

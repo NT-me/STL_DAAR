@@ -19,7 +19,6 @@ if __name__ == '__main__':
     timeMode = False
 
     if len(sys.argv) > 3:
-        # if sys.argv[3] == '-v' or sys.argv[3] == '-view':
         if "-v" in sys.argv or "--view" in sys.argv:
             viewMode = True
         if "-t" in sys.argv or "--time" in sys.argv:
