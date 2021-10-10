@@ -82,13 +82,13 @@ if __name__ == '__main__':
 
         print("\n== AST ==\n")
         print(ast)
-        print("\n==========\n")
+        print("\n\n")
 
         if not ast.isWord():
             print("== NDFA ==\n")
             print(automatonNDFA)
             automatonNDFA.goToMermaid()
-            print("==========\n")
+            print("\n\n")
 
             print("== DFA ==\n")
             print(automatonDFA)
