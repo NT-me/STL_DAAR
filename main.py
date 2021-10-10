@@ -23,7 +23,7 @@ if __name__ == '__main__':
             viewMode = True
         if "-t" in sys.argv or "--time" in sys.argv:
             timeMode = True
-        else:
+        if not timeMode and not viewMode:
             print("Error : invalid option -- " + "'" + sys.argv[3] + "'")
             sys.exit(1)
 
