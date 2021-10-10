@@ -50,9 +50,9 @@ def egrep(regexMode, file, match):
         start = 0
         for m in matches:
             nbMatches += 1
-            print(l[:m[0]], end="")
+            print(l[start:m[0]], end="")
             print(OKGREEN + l[m[0]: m[1]] + ENDC, end="")
-            start = m[1]+1
+            start = m[1]
 
         if start != 0 and start < len(l):
             print(l[start:])
