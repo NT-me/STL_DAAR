@@ -1,4 +1,4 @@
-import regex as r
+import parser as r
 import regextreeToAutomaton as rta
 import determinization as deter
 import printer as printer
