@@ -309,9 +309,7 @@ class DFA:
                     for asciichar in self.getLang():
                         if self.tTab[state][ord(asciichar)] == deadState:
                             self.tTab[state][ord(asciichar)] = -1
-        print(currentBilan)
         currentBilan = u.reIndexDict(currentBilan)
-        print(currentBilan)
 
         # Changement de l'état initial
         self.initialState = currentBilan[self.initialState][0]
